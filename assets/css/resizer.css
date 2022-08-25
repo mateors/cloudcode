@@ -1,0 +1,52 @@
+.resizable {
+    position: relative;
+}
+.resizer {
+    /* All resizers are positioned absolutely inside the element */
+    position: absolute;
+}
+
+/* Placed at the right side */
+.resizer-r {
+    cursor: col-resize;
+    height: 100%;
+    right: 0;
+    top: 0;
+    width: 5px;
+
+}
+
+/* Placed at the bottom side */
+/* .resizer-b {
+    bottom: 0;
+    cursor: row-resize;
+    height: 5px;
+    left: 0;
+    width: 100%;
+} */
+
+
+.css-resz {
+    border-width: 0px;
+    border-style: solid;
+    box-sizing: border-box;
+    display: flex;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-shrink: 0;
+    outline: none;
+    width: 8px;
+    height: 885px;
+    position: absolute;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    z-index: 1;
+    transform: translate(207.544px, 0px);
+    border-radius: var(--border-radius-8);
+    min-width: 8px;
+    min-height: 8px;
+    cursor: col-resize;
+    --grip-color: var(--outline-dimmest);
+}
