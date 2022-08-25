@@ -3,6 +3,9 @@
 Very first day look and feel
 ![code_cloud_ui](./screens/code_cloud_screen.png)
 
+Look and feel quick view (animated)
+![ui_animated](./screens/ui_animated.gif)
+
 ## Learning Resource
 * [Make a resizable element](https://htmldom.dev/make-a-resizable-element)
 * [Hex to RGB](https://www.webfx.com/web-design/hex-to-rgb)
