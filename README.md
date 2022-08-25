@@ -1,6 +1,7 @@
 # cloudcode
 
-
+Very first day look and feel
+![code_cloud_ui](./screens/code_cloud_screen.png)
 
 ## Learning Resource
 * [Make a resizable element](https://htmldom.dev/make-a-resizable-element)
