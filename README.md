@@ -3,7 +3,7 @@
 Very first day look and feel
 ![code_cloud_ui](./screens/code_cloud_screen.png)
 
-Look and feel quick view (animated)
+### Animated look and feel (quickly see what inside)
 ![ui_animated](./screens/ui_animated.gif)
 
 ## Learning Resource
