@@ -1,0 +1,8 @@
+{
+    "hello_world": "Hello World",
+    "messages": {
+      "description": "ব্যবহারকারীর অপঠিত ইমেলের সংখ্যা",
+      "one": "{{.Name}} {{.Count}} টি ইমেইল আছে",
+      "other": "{{.Name}} {{.Count}} টি ইমেইল আছে"
+      }
+}
