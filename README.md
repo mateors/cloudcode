@@ -16,3 +16,4 @@ Very first day look and feel
 * [go-i18n](https://lokalise.com/blog/go-internationalization-using-go-i18n)
 * [go template Internationalisation](https://phrase.com/blog/posts/internationalisation-in-go-with-go-i18n)
 * [code example](https://github.com/nicksnyder/go-i18n/blob/main/v2/example/main.go)
+* [TOML PACKAGE](https://github.com/BurntSushi/toml)
