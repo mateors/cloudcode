@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
@@ -104,6 +107,16 @@ func dynamicFileMethod(languageTag string) {
 	fmt.Println(err, localization)
 }
 
+var page = template.Must(template.New("").Parse(`
+<!DOCTYPE html>
+<html>
+  <title>Golang i18n</title>
+ <body>
+	<h1>{{.Title}}</h1>
+	{{range .Paragraphs}}<p>{{.}}</p>{{end}}
+ </body>
+</html>`))
+
 func main() {
 
 	//staticMethod()
@@ -111,4 +124,52 @@ func main() {
 	//dynamicFileMethod("en")
 	//dynamicFileMethod("bn")
 	//dynamicFileMethod(language.Bengali.String())
+
+	http.HandleFunc("/", indexHandler)
+
+	http.ListenAndServe(":8081", nil)
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+
+	bundle := i18n.NewBundle(language.English)
+	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
+	//bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
+
+	//bundle.MustLoadMessageFile("active.es.toml")
+	bundle.LoadMessageFile("locals/en.json")
+	bundle.LoadMessageFile("locals/bn.json")
+
+	lang := r.FormValue("lang")
+	accept := r.Header.Get("Accept-Language")
+
+	localizer := i18n.NewLocalizer(bundle, lang, accept)
+	//localizer := i18n.NewLocalizer(bundle, languageTag) //8
+
+	name := "Wania"
+	messagesCount := 2
+
+	localizeConfig := i18n.LocalizeConfig{ //5
+		MessageID: "messages",
+		TemplateData: map[string]interface{}{
+			"Name":  "Mostain",
+			"Count": messagesCount,
+		},
+	}
+
+	message, err := localizer.Localize(&localizeConfig)
+	if err != nil {
+		log.Println(err)
+	}
+
+	data := map[string]interface{}{
+		"Title": name,
+		"Paragraphs": []string{
+			message,
+			message,
+		},
+	}
+
+	err = page.Execute(w, data)
+	fmt.Println(err)
 }
