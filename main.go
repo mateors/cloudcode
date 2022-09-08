@@ -180,13 +180,13 @@ func GetBaseURL(r *http.Request) string {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var baseurl string = GetBaseURL(r)
-	lang := r.FormValue("lang")
 
+	//Localization
+	lang := r.FormValue("lang")
 	tdata := make(map[string]interface{})
 	tdata["Name"] = "Mostain"
 	tdata["Count"] = 0
 	message := LocalizeTemplate(lang, "messages", tdata)
-
 	LocRun := Localize(lang, "LocRun")
 	LocInvite := Localize(lang, "LocInvite")
 
