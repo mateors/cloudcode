@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -109,6 +111,13 @@ func dynamicFileMethod(languageTag string) {
 	fmt.Println(err, localization)
 }
 
+var workingDirectory string
+
+func init() {
+
+	workingDirectory, _ = os.Getwd()
+}
+
 func main() {
 
 	//staticMethod()
@@ -120,6 +129,10 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.RealIP)
+
+	assetPath := filepath.Join(workingDirectory, "assets")
+	//http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))
+	r.Handle("/resources/*", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))
 
 	r.HandleFunc("/", indexHandler)
 	//http.HandleFunc("/", indexHandler)
