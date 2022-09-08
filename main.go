@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -118,6 +119,8 @@ var staticResourceRelativePath string
 //go:embed assets/*
 var assetsDir embed.FS
 
+var localizer *i18n.Localizer
+
 func init() {
 
 	workingDirectory, _ = os.Getwd()
@@ -150,7 +153,21 @@ func main() {
 	http.ListenAndServe(":8081", r)
 }
 
+func GetBaseURL(r *http.Request) string {
+
+	var baseurl, proto string
+	if strings.Contains(r.Proto, "HTTP") {
+		proto = "http"
+	} else {
+		proto = "https"
+	}
+	baseurl = fmt.Sprintf("%s://%s", proto, r.Host)
+	return baseurl
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+
+	var baseurl string = GetBaseURL(r)
 
 	bundle := i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
@@ -163,24 +180,40 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	lang := r.FormValue("lang")
 	accept := r.Header.Get("Accept-Language")
 
-	localizer := i18n.NewLocalizer(bundle, lang, accept)
+	localizer = i18n.NewLocalizer(bundle, lang, accept)
 	//localizer := i18n.NewLocalizer(bundle, languageTag) //8
 
-	name := "Wania"
-	messagesCount := 2
+	// localizeConfig := i18n.LocalizeConfig{
+	// 	MessageID: "messages",
+	// 	TemplateData: map[string]interface{}{
+	// 		"Name":  "Mostain",
+	// 		"Count": 0,
+	// 	},
+	// }
 
-	localizeConfig := i18n.LocalizeConfig{ //5
-		MessageID: "messages",
-		TemplateData: map[string]interface{}{
-			"Name":  "Mostain",
-			"Count": messagesCount,
-		},
-	}
+	// message, err := localizer.Localize(&localizeConfig)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
-	message, err := localizer.Localize(&localizeConfig)
-	if err != nil {
-		log.Println(err)
-	}
+	tdata := make(map[string]interface{})
+	tdata["Name"] = "Mostain"
+	tdata["Count"] = 0
+	message := LocalizeTemplate("messages", localizer, tdata)
+
+	// LocRun, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "LocRun"})
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	LocRun := Localize("LocRun", localizer)
+
+	// txtInvite, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "btnInvite"})
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	LocInvite := Localize("LocInvite", localizer)
 
 	tmplt, err := template.ParseFiles("templates/home.gohtml")
 	if err != nil {
@@ -188,17 +221,60 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("r.RemoteAddr", r.RemoteAddr)
+	//fmt.Println("r.RemoteAddr", r.RemoteAddr)
+	// local := map[string]interface{}{
+	// 	"Title": "name",
+	// 	"Paragraphs": []string{
+	// 		message,
+	// 		message,
+	// 	},
+	// }
+
+	// data := struct {
+	// 	Base   string
+	// 	Title  string
+	// 	Static string
+	// 	Local  map[string]interface{}
+	// }{
+	// 	Base:   baseurl,
+	// 	Title:  "CC",
+	// 	Static: staticResourceRelativePath,
+	// 	Local:  local,
+	// }
+
 	data := map[string]interface{}{
-		"Title": name,
+		"Title": "CC",
 		"Paragraphs": []string{
 			message,
 			message,
 		},
+		"Base":      baseurl,
+		"Static":    staticResourceRelativePath,
+		"LocInvite": LocInvite,
+		"LocRun":    LocRun,
 	}
 
 	err = tmplt.Execute(w, data)
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func Localize(messageID string, localizer *i18n.Localizer) string {
+
+	//*i18n.Localizer{}
+	transalation, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
+	if err != nil {
+		log.Println(err)
+	}
+	return transalation
+}
+
+func LocalizeTemplate(messageID string, localizer *i18n.Localizer, data map[string]interface{}) string {
+
+	transalation, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID, TemplateData: data})
+	if err != nil {
+		log.Println(err)
+	}
+	return transalation
 }

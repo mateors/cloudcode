@@ -1,8 +1,74 @@
 <!DOCTYPE html>
-<html>
-  <title>Golang i18n</title>
- <body>
-	<h1>{{.Title}}</h1>
-	{{range .Paragraphs}}<p>{{.}}</p>{{end}}
- </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<base href="{{.Base}}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="{{.Static}}/css/styles.css">
+    <link rel="stylesheet" href="{{.Static}}/css/resizer.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            <!--company logo + multiple programming language selection option-->
+
+            <div class="top_left">
+
+                <div class="logo"><span class="material-symbols-outlined">code_blocks</span></div>
+
+                <div class="options">
+                    <select name="language" id="language">
+                        <option value="golang">Golang</option>
+                        <option value="javascript">Javascript/NodeJS</option>
+                        <option value="php">Php</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!--code compiler, submit code for remote compilation-->
+            <div class="run">
+                <button id="run"><span class="material-symbols-outlined">play_arrow</span>{{.LocRun}}</button>
+            </div>
+
+            <!--share code link or invite friends to collaborate together, online live coding--->
+            <div class="share">
+                <button id="invite"><span class="material-symbols-outlined">person_add</span>{{.LocInvite}}</button>
+                <button id="search"><span class="material-symbols-outlined">manage_search</span></button>
+            </div>
+
+        </div>
+
+        <div class="wrapper">
+
+            <!---files,database,version control, settings, etc--->
+            <div id="resizeExplorer" class="explorer resizable">
+                File explorer
+                <div class="resizer resizer-r"></div>
+            </div>
+
+            <!--actual programming code-->
+            <div class="code">
+                <textarea name="code" id="code" cols="30" rows="10" placeholder="write your code here"></textarea>
+            </div>
+
+            <!--output window like a console or a terminal-->
+            <div class="output">
+                <label for="output" contenteditable="true">output goes here...</label>
+				{{range .Paragraphs}}<p>{{.}}</p>{{end}}
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{{.Static}}/js/client.js"></script>
+    
+</body>
 </html>

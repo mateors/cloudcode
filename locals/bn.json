@@ -4,5 +4,11 @@
       "description": "ব্যবহারকারীর অপঠিত ইমেলের সংখ্যা",
       "one": "{{.Name}} {{.Count}} টি ইমেইল আছে",
       "other": "{{.Name}} {{.Count}} টি ইমেইল আছে"
-      }
+      },
+    "LocInvite": {
+        "description":"invite button",
+        "other": "ইনভাইট"
+      },
+
+    "LocRun":{"description":"", "other":"রান"}
 }

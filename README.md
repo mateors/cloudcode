@@ -10,6 +10,16 @@ Very first day look and feel
 ## go-chi router installation
 > `go get -u github.com/go-chi/chi/v5`
 
+## Localization
+> http://localhost:8081/?lang=en
+
+> http://localhost:8081/?lang=bn
+
+## Project Directory Structure
+* page -> contains all the views | page
+* pageh -> page handler
+* template -> contains all gohtml template file
+
 
 ## Learning Resource
 * [Make a resizable element](https://htmldom.dev/make-a-resizable-element)
