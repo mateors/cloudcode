@@ -107,16 +107,6 @@ func dynamicFileMethod(languageTag string) {
 	fmt.Println(err, localization)
 }
 
-// var page = template.Must(template.New("").Parse(`
-// <!DOCTYPE html>
-// <html>
-//   <title>Golang i18n</title>
-//  <body>
-// 	<h1>{{.Title}}</h1>
-// 	{{range .Paragraphs}}<p>{{.}}</p>{{end}}
-//  </body>
-// </html>`))
-
 func main() {
 
 	//staticMethod()
