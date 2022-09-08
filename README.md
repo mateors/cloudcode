@@ -6,6 +6,11 @@ Very first day look and feel
 ### Animated look and feel (quickly see what inside)
 ![ui_animated](./screens/ui_animated.gif)
 
+
+## go-chi router installation
+> `go get -u github.com/go-chi/chi/v5`
+
+
 ## Learning Resource
 * [Make a resizable element](https://htmldom.dev/make-a-resizable-element)
 * [Hex to RGB](https://www.webfx.com/web-design/hex-to-rgb)

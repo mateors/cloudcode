@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
@@ -115,9 +117,14 @@ func main() {
 	//dynamicFileMethod("bn")
 	//dynamicFileMethod(language.Bengali.String())
 
-	http.HandleFunc("/", indexHandler)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.RealIP)
 
-	http.ListenAndServe(":8081", nil)
+	r.HandleFunc("/", indexHandler)
+	//http.HandleFunc("/", indexHandler)
+
+	http.ListenAndServe(":8081", r)
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -158,6 +165,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("r.RemoteAddr", r.RemoteAddr)
 	data := map[string]interface{}{
 		"Title": name,
 		"Paragraphs": []string{
