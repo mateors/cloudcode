@@ -120,10 +120,21 @@ var staticResourceRelativePath string
 var assetsDir embed.FS
 
 var localizer *i18n.Localizer
+var bundle *i18n.Bundle
 
 func init() {
 
 	workingDirectory, _ = os.Getwd()
+
+	bundle = i18n.NewBundle(language.English)
+	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
+	//bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
+	//bundle.MustLoadMessageFile("active.es.toml")
+	bundle.LoadMessageFile("locals/en.json")
+	bundle.LoadMessageFile("locals/bn.json")
+
+	//fmt.Println(Localize("en", "LocRun"))
+	//os.Exit(1)
 }
 
 func main() {
@@ -138,6 +149,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.RealIP)
 	//r.Use(middleware.StripSlashes)
+	r.Use(middleware.Recoverer)
 
 	assetPath := filepath.Join(workingDirectory, "assets")
 	//http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))//regular http Handle
@@ -169,18 +181,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var baseurl string = GetBaseURL(r)
 
-	bundle := i18n.NewBundle(language.English)
-	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
-	//bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
-
-	//bundle.MustLoadMessageFile("active.es.toml")
-	bundle.LoadMessageFile("locals/en.json")
-	bundle.LoadMessageFile("locals/bn.json")
-
 	lang := r.FormValue("lang")
-	accept := r.Header.Get("Accept-Language")
-
-	localizer = i18n.NewLocalizer(bundle, lang, accept)
+	// accept := r.Header.Get("Accept-Language")
+	// localizer = i18n.NewLocalizer(bundle, lang, accept)
 	//localizer := i18n.NewLocalizer(bundle, languageTag) //8
 
 	// localizeConfig := i18n.LocalizeConfig{
@@ -199,21 +202,21 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tdata := make(map[string]interface{})
 	tdata["Name"] = "Mostain"
 	tdata["Count"] = 0
-	message := LocalizeTemplate("messages", localizer, tdata)
+	message := LocalizeTemplate(lang, "messages", tdata)
 
 	// LocRun, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "LocRun"})
 	// if err != nil {
 	// 	log.Println(err)
 	// }
 
-	LocRun := Localize("LocRun", localizer)
+	LocRun := Localize(lang, "LocRun")
 
 	// txtInvite, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "btnInvite"})
 	// if err != nil {
 	// 	log.Println(err)
 	// }
 
-	LocInvite := Localize("LocInvite", localizer)
+	LocInvite := Localize(lang, "LocInvite")
 
 	tmplt, err := template.ParseFiles("templates/home.gohtml")
 	if err != nil {
@@ -260,9 +263,10 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Localize(messageID string, localizer *i18n.Localizer) string {
+func Localize(lang, messageID string) string {
 
 	//*i18n.Localizer{}
+	localizer = i18n.NewLocalizer(bundle, lang)
 	transalation, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 	if err != nil {
 		log.Println(err)
@@ -270,8 +274,9 @@ func Localize(messageID string, localizer *i18n.Localizer) string {
 	return transalation
 }
 
-func LocalizeTemplate(messageID string, localizer *i18n.Localizer, data map[string]interface{}) string {
+func LocalizeTemplate(lang, messageID string, data map[string]interface{}) string {
 
+	localizer = i18n.NewLocalizer(bundle, lang)
 	transalation, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID, TemplateData: data})
 	if err != nil {
 		log.Println(err)
