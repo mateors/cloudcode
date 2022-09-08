@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -112,6 +113,10 @@ func dynamicFileMethod(languageTag string) {
 }
 
 var workingDirectory string
+var staticResourceRelativePath string
+
+//go:embed assets/*
+var assetsDir embed.FS
 
 func init() {
 
@@ -129,10 +134,15 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.RealIP)
+	//r.Use(middleware.StripSlashes)
 
 	assetPath := filepath.Join(workingDirectory, "assets")
-	//http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))
+	//http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))//regular http Handle
 	r.Handle("/resources/*", http.StripPrefix("/resources/", http.FileServer(http.Dir(assetPath))))
+	staticResourceRelativePath = "/resources" //resources/css/resizer.css
+
+	//r.Handle("/resources/*", http.StripPrefix("/resources/", http.FileServer(http.FS(assetsDir))))
+	//staticResourceRelativePath = "/resources/assets"
 
 	r.HandleFunc("/", indexHandler)
 	//http.HandleFunc("/", indexHandler)
