@@ -180,42 +180,14 @@ func GetBaseURL(r *http.Request) string {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	var baseurl string = GetBaseURL(r)
-
 	lang := r.FormValue("lang")
-	// accept := r.Header.Get("Accept-Language")
-	// localizer = i18n.NewLocalizer(bundle, lang, accept)
-	//localizer := i18n.NewLocalizer(bundle, languageTag) //8
-
-	// localizeConfig := i18n.LocalizeConfig{
-	// 	MessageID: "messages",
-	// 	TemplateData: map[string]interface{}{
-	// 		"Name":  "Mostain",
-	// 		"Count": 0,
-	// 	},
-	// }
-
-	// message, err := localizer.Localize(&localizeConfig)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
 
 	tdata := make(map[string]interface{})
 	tdata["Name"] = "Mostain"
 	tdata["Count"] = 0
 	message := LocalizeTemplate(lang, "messages", tdata)
 
-	// LocRun, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "LocRun"})
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
 	LocRun := Localize(lang, "LocRun")
-
-	// txtInvite, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: "btnInvite"})
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
 	LocInvite := Localize(lang, "LocInvite")
 
 	tmplt, err := template.ParseFiles("templates/home.gohtml")
@@ -223,27 +195,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-
-	//fmt.Println("r.RemoteAddr", r.RemoteAddr)
-	// local := map[string]interface{}{
-	// 	"Title": "name",
-	// 	"Paragraphs": []string{
-	// 		message,
-	// 		message,
-	// 	},
-	// }
-
-	// data := struct {
-	// 	Base   string
-	// 	Title  string
-	// 	Static string
-	// 	Local  map[string]interface{}
-	// }{
-	// 	Base:   baseurl,
-	// 	Title:  "CC",
-	// 	Static: staticResourceRelativePath,
-	// 	Local:  local,
-	// }
 
 	data := map[string]interface{}{
 		"Title": "CC",
@@ -265,7 +216,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func Localize(lang, messageID string) string {
 
-	//*i18n.Localizer{}
 	localizer = i18n.NewLocalizer(bundle, lang)
 	transalation, err := localizer.Localize(&i18n.LocalizeConfig{MessageID: messageID})
 	if err != nil {
