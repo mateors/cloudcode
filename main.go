@@ -107,15 +107,15 @@ func dynamicFileMethod(languageTag string) {
 	fmt.Println(err, localization)
 }
 
-var page = template.Must(template.New("").Parse(`
-<!DOCTYPE html>
-<html>
-  <title>Golang i18n</title>
- <body>
-	<h1>{{.Title}}</h1>
-	{{range .Paragraphs}}<p>{{.}}</p>{{end}}
- </body>
-</html>`))
+// var page = template.Must(template.New("").Parse(`
+// <!DOCTYPE html>
+// <html>
+//   <title>Golang i18n</title>
+//  <body>
+// 	<h1>{{.Title}}</h1>
+// 	{{range .Paragraphs}}<p>{{.}}</p>{{end}}
+//  </body>
+// </html>`))
 
 func main() {
 
@@ -162,6 +162,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	tmplt, err := template.ParseFiles("templates/home.gohtml")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	data := map[string]interface{}{
 		"Title": name,
 		"Paragraphs": []string{
@@ -170,6 +176,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	err = page.Execute(w, data)
-	fmt.Println(err)
+	err = tmplt.Execute(w, data)
+	if err != nil {
+		log.Println(err)
+	}
 }
