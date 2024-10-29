@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
@@ -121,20 +122,25 @@ var assetsDir embed.FS
 
 var localizer *i18n.Localizer
 var bundle *i18n.Bundle
+var PORT string
 
 func init() {
 
 	workingDirectory, _ = os.Getwd()
-
 	bundle = i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 	//bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
 	//bundle.MustLoadMessageFile("active.es.toml")
 	bundle.LoadMessageFile("locals/en.json")
 	bundle.LoadMessageFile("locals/bn.json")
-
 	//fmt.Println(Localize("en", "LocRun"))
 	//os.Exit(1)
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	PORT = os.Getenv("PORT")
 }
 
 func main() {
@@ -162,7 +168,7 @@ func main() {
 	r.HandleFunc("/", indexHandler)
 	//http.HandleFunc("/", indexHandler)
 
-	http.ListenAndServe(":8081", r)
+	http.ListenAndServe(fmt.Sprintf(":%s", PORT), r)
 }
 
 func GetBaseURL(r *http.Request) string {
